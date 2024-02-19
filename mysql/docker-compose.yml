@@ -1,0 +1,44 @@
+# 镜像仓库: https://hub.docker.com/
+version: '3'
+services:
+
+  # MySQL 服务
+  mysql:
+    build:
+      context: .
+    container_name: mysql
+    ports:
+      - '3306:3306'
+    volumes:
+      - '~/data/mysql:/var/lib/mysql'
+      - '/etc/localtime:/etc/localtime:ro'
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'true'
+      MYSQL_ROOT_HOST: '%'
+      TZ: Asia/Shanghai
+    networks:
+      - custom-local-network
+
+  
+  mysql-workbench:
+    image: lscr.io/linuxserver/mysql-workbench:latest
+    container_name: mysql-workbench
+    restart: always
+    ports:
+      - 3000:3000
+      - 3001:3001
+    volumes:
+      - '~/data/mysql-workbench:/config'
+    environment:
+      PUID: 1000
+      GUID: 1000
+      TZ: Asia/Shanghai
+    cap_add:
+      - IPC_LOCK
+    networks:
+      - custom-local-network
+
+# 自定义内部网络
+networks:
+  custom-local-network:
+    driver: bridge # 桥接模式

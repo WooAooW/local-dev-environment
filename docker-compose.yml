@@ -1,0 +1,12 @@
+# 镜像仓库: https://hub.docker.com/
+version: '3'
+
+include:
+  - mysql/docker-compose.yml
+  - nginx/docker-compose.yml
+  - redis/docker-compose.yml
+
+# 自定义内部网络
+networks:
+  custom-local-network:
+    driver: bridge # 桥接模式

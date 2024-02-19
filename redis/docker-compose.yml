@@ -1,0 +1,41 @@
+# 镜像仓库: https://hub.docker.com/
+version: '3'
+services:
+
+  # Redis 服务
+  redis:
+    image: 'redis:7.2'
+    container_name: redis
+    restart: always
+    ports:
+      - '6379:6379'
+    volumes:
+      - '~/data/redis:/data'
+      - '/etc/localtime:/etc/localtime:ro'
+    environment:
+      TZ: Asia/Shanghai
+    networks:
+      - custom-local-network
+
+  # RedisInsight 服务
+  redisinsight:
+    image: 'redis/redisinsight:latest'
+    container_name: redisinsight
+    restart: always
+    ports:
+      - '5540:5540'
+    volumes:
+      - '~/data/redisinsight:/db'
+    environment:
+      TZ: Asia/Shanghai
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    links:
+      - redis
+    networks:
+      - custom-local-network
+
+# 自定义内部网络
+networks:
+  custom-local-network:
+    driver: bridge # 桥接模式
